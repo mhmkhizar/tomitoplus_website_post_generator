@@ -182,19 +182,19 @@
         <button type="submit">Get Info</button>
       </form>
       <div class="result" id="result">
-        <p>
-          <strong>Image URL:</strong>
-          <span id="posterUrl"></span>
-          <span class="tooltip">
-            <i class="fas fa-clipboard copy-btn copy-icon" onclick="copyText('posterUrl')"></i>
-            <i class="fas fa-check copy-btn check-icon" style="display: none;"></i>
-          </span>
-        </p>
-        <p>
+	<p>
           <strong>Title:</strong>
           <span id="title"></span>
           <span class="tooltip">
             <i class="fas fa-clipboard copy-btn copy-icon" onclick="copyText('title')"></i>
+            <i class="fas fa-check copy-btn check-icon" style="display: none;"></i>
+          </span>
+        </p>
+	<p>
+          <strong>Plot:</strong>
+          <span id="plot"></span>
+          <span class="tooltip">
+            <i class="fas fa-clipboard copy-btn copy-icon" onclick="copyText('plot')"></i>
             <i class="fas fa-check copy-btn check-icon" style="display: none;"></i>
           </span>
         </p>
@@ -254,11 +254,11 @@
             <i class="fas fa-check copy-btn check-icon" style="display: none;"></i>
           </span>
         </p>
-        <p>
-          <strong>Plot:</strong>
-          <span id="plot"></span>
+	<p>
+          <strong>Featured Image URL:</strong>
+          <span id="posterUrl"></span>
           <span class="tooltip">
-            <i class="fas fa-clipboard copy-btn copy-icon" onclick="copyText('plot')"></i>
+            <i class="fas fa-clipboard copy-btn copy-icon" onclick="copyText('posterUrl')"></i>
             <i class="fas fa-check copy-btn check-icon" style="display: none;"></i>
           </span>
         </p>

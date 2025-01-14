@@ -136,7 +136,7 @@
       .tooltip {
         display: inline-flex;
         align-items: center;
-	justify-content: end;
+        justify-content: end;
       }
 
       @media (max-width: 600px) {
@@ -182,7 +182,7 @@
         <button type="submit">Get Info</button>
       </form>
       <div class="result" id="result">
-	<p>
+        <p>
           <strong>Title:</strong>
           <span id="title"></span>
           <span class="tooltip">
@@ -190,7 +190,15 @@
             <i class="fas fa-check copy-btn check-icon" style="display: none;"></i>
           </span>
         </p>
-	<p>
+        <p>
+          <strong>URL (X1080):</strong>
+          <span id="posterUrl1080"></span>
+          <span class="tooltip">
+            <i class="fas fa-clipboard copy-btn copy-icon" onclick="copyText('posterUrl1080')"></i>
+            <i class="fas fa-check copy-btn check-icon" style="display: none;"></i>
+          </span>
+        </p>
+        <p>
           <strong>Plot:</strong>
           <span id="plot"></span>
           <span class="tooltip">
@@ -254,7 +262,7 @@
             <i class="fas fa-check copy-btn check-icon" style="display: none;"></i>
           </span>
         </p>
-	<p>
+        <p>
           <strong>URL (X300):</strong>
           <span id="posterUrl"></span>
           <span class="tooltip">
@@ -303,7 +311,15 @@
               return;
             }
 
-            document.getElementById("posterUrl").innerText = data.Poster !== "N/A" ? data.Poster : "No URL available";
+            const posterUrl = data.Poster !== "N/A" ? data.Poster : "No URL available";
+            document.getElementById("posterUrl").innerText = posterUrl;
+            
+            // Generate 1080p URL by replacing the size in the original URL
+            const posterUrl1080 = posterUrl !== "No URL available" 
+              ? posterUrl.replace(/._V1_SX300\./g, '._V1_SX1080.')
+              : "No URL available";
+            document.getElementById("posterUrl1080").innerText = posterUrl1080;
+            
             document.getElementById("title").innerText = data.Title;
             document.getElementById("type").innerText = data.Type.charAt(0).toUpperCase() + data.Type.slice(1);
             document.getElementById("year").innerText = data.Year;

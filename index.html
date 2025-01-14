@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>IMDb Info Fetcher</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #121212;
+        color: #e0e0e0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        margin: 0;
+      }
+
+      .container {
+        background-color: #1f1f1f;
+        padding: 40px;
+        border-radius: 12px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
+        max-width: 700px;
+        width: 100%;
+        text-align: center;
+        box-sizing: border-box;
+      }
+
+      h1 {
+        font-size: 24px;
+        margin-bottom: 20px;
+        color: #fff;
+        text-transform: uppercase;
+      }
+
+      input {
+        width: 100%;
+        padding: 12px;
+        margin: 0 0 12px 0;
+        border-radius: 5px;
+        border: 1px solid #333;
+        background-color: #333;
+        color: #e0e0e0;
+        font-size: 16px;
+        box-sizing: border-box;
+      }
+
+      input:focus {
+        outline: none;
+        border-color: #6200ee;
+      }
+
+      button {
+        padding: 12px 24px;
+        background-color: #6200ee;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s;
+      }
+
+      button:hover {
+        background-color: #3700b3;
+      }
+
+      .result {
+        margin-top: 30px;
+        display: none;
+        text-align: left;
+        color: #fff;
+      }
+
+      .result p {
+        margin: 10px 0;
+        word-wrap: break-word; /* Wrap long text in result paragraphs */
+        overflow-wrap: break-word; /* Ensure the long text breaks to the next line */
+      }
+
+      .copy-btn {
+        cursor: pointer;
+        margin-left: 10px;
+	margin-right: 5px;
+        color: #e5e5e5;
+      }
+
+      .copy-icon {
+        display: inline-block;
+      }
+
+      .check-icon {
+        display: none;
+      }
+
+      .tooltip {
+        position: relative;
+        display: inline-block;
+      }
+
+      /* Only show the check icon when the copy button is clicked */
+      .tooltip.clicked .copy-icon {
+        display: none;
+      }
+
+      .tooltip.clicked .check-icon {
+        display: inline-block;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>IMDb Info Fetcher</h1>
+      <form onsubmit="fetchMovieInfo(event)">
+        <input
+          type="text"
+          id="imdbID"
+          placeholder="Enter IMDb ID (e.g., tt3896198)"
+          required
+          autocomplete="on"
+        />
+        <input
+          type="text"
+          id="dubbedLanguages"
+          placeholder="Enter Dubbed Language(s)"
+          required
+          autocomplete="on"
+        />
+        <input
+          type="text"
+          id="subtitleLanguages"
+          placeholder="Enter Subtitle Language(s)"
+          required
+          autocomplete="on"
+        />
+        <button type="submit">Get Info</button>
+      </form>
+
+      <div class="result" id="result">
+        <p>
+          <span class="tooltip">
+            <i class="fas fa-clipboard copy-btn copy-icon" onclick="copyText('posterUrl')"></i>
+          </span>
+          <strong>Image URL:</strong> 
+          <span id="posterUrl"></span>
+          <span class="tooltip">
+            <i class="fas fa-check copy-btn check-icon"></i>
+          </span>
+        </p>
+        <p>
+          <span class="tooltip">
+            <i class="fas fa-clipboard copy-btn copy-icon" onclick="copyText('title')"></i>
+          </span>
+          <strong>Title:</strong> 
+          <span id="title"></span>
+          <span class="tooltip">
+            <i class="fas fa-check copy-btn check-icon"></i>
+          </span>
+        </p>
+        <p>
+          <span class="tooltip">
+            <i class="fas fa-clipboard copy-btn copy-icon" onclick="copyText('type')"></i>
+          </span>
+          <strong>Type:</strong> 
+          <span id="type"></span>
+          <span class="tooltip">
+            <i class="fas fa-check copy-btn check-icon"></i>
+          </span>
+        </p>
+        <p>
+          <span class="tooltip">
+            <i class="fas fa-clipboard copy-btn copy-icon" onclick="copyText('year')"></i>
+          </span>
+          <strong>Year:</strong> 
+          <span id="year"></span>
+          <span class="tooltip">
+            <i class="fas fa-check copy-btn check-icon"></i>
+          </span>
+        </p>
+        <p>
+          <span class="tooltip">
+            <i class="fas fa-clipboard copy-btn copy-icon" onclick="copyText('runtime')"></i>
+          </span>
+          <strong>Runtime:</strong> 
+          <span id="runtime"></span>
+          <span class="tooltip">
+            <i class="fas fa-check copy-btn check-icon"></i>
+          </span>
+        </p>
+        <p>
+          <span class="tooltip">
+            <i class="fas fa-clipboard copy-btn copy-icon" onclick="copyText('genre')"></i>
+          </span>
+          <strong>Genre:</strong> 
+          <span id="genre"></span>
+          <span class="tooltip">
+            <i class="fas fa-check copy-btn check-icon"></i>
+          </span>
+        </p>
+        <p>
+          <span class="tooltip">
+            <i class="fas fa-clipboard copy-btn copy-icon" onclick="copyText('language')"></i>
+          </span>
+          <strong>Language:</strong> 
+          <span id="language"></span>
+          <span class="tooltip">
+            <i class="fas fa-check copy-btn check-icon"></i>
+          </span>
+        </p>
+        <p>
+          <span class="tooltip">
+            <i class="fas fa-clipboard copy-btn copy-icon" onclick="copyText('userDubbedLanguages')"></i>
+          </span>
+          <strong>Dubbed Language(s):</strong> 
+          <span id="userDubbedLanguages"></span>
+          <span class="tooltip">
+            <i class="fas fa-check copy-btn check-icon"></i>
+          </span>
+        </p>
+        <p>
+          <span class="tooltip">
+            <i class="fas fa-clipboard copy-btn copy-icon" onclick="copyText('userSubtitleLanguages')"></i>
+          </span>
+          <strong>Subtitle Language(s):</strong> 
+          <span id="userSubtitleLanguages"></span>
+          <span class="tooltip">
+            <i class="fas fa-check copy-btn check-icon"></i>
+          </span>
+        </p>
+        <p>
+          <span class="tooltip">
+            <i class="fas fa-clipboard copy-btn copy-icon" onclick="copyText('plot')"></i>
+          </span>
+          <strong>Plot:</strong> 
+          <span id="plot"></span>
+          <span class="tooltip">
+            <i class="fas fa-check copy-btn check-icon"></i>
+          </span>
+        </p>
+      </div>
+    </div>
+
+    <script>
+      const apiKey = "5725af9a";
+
+      function copyText(elementId) {
+        const text = document.getElementById(elementId).innerText;
+        const tooltipContainer = event.target.parentElement;
+        const copyIcon = tooltipContainer.querySelector('.copy-icon');
+        const checkIcon = tooltipContainer.querySelector('.check-icon');
+        
+        navigator.clipboard.writeText(text).then(() => {
+          // Add the 'clicked' class to show the check icon and hide the copy icon
+          tooltipContainer.classList.add('clicked');
+          
+          // Reset after 1 second(s)
+          setTimeout(() => {
+            tooltipContainer.classList.remove('clicked');
+          }, 1000);
+        }).catch(err => {
+          console.error('Failed to copy text: ', err);
+        });
+      }
+
+      function fetchMovieInfo(event) {
+        event.preventDefault();
+        const imdbID = document.getElementById("imdbID").value.trim();
+        const dubbedLanguages = document.getElementById("dubbedLanguages").value.trim();
+        const subtitleLanguages = document.getElementById("subtitleLanguages").value.trim();
+        const resultDiv = document.getElementById("result");
+        resultDiv.style.display = "none";
+
+        fetch(`https://www.omdbapi.com/?i=${imdbID}&apikey=${apiKey}&plot=full`)
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.Response === "False") {
+              alert("Movie not found. Please check the IMDb ID.");
+              return;
+            }
+
+            document.getElementById("posterUrl").innerText = data.Poster !== "N/A" ? data.Poster : "No URL available";
+            document.getElementById("title").innerText = data.Title;
+            document.getElementById("type").innerText = data.Type.charAt(0).toUpperCase() + data.Type.slice(1);
+            document.getElementById("year").innerText = data.Year;
+            document.getElementById("runtime").innerText = data.Runtime;
+            document.getElementById("genre").innerText = data.Genre;
+            document.getElementById("language").innerText = data.Language;
+            document.getElementById("plot").innerText = data.Plot;
+            document.getElementById("userDubbedLanguages").innerText = dubbedLanguages;
+            document.getElementById("userSubtitleLanguages").innerText = subtitleLanguages;
+
+            resultDiv.style.display = "block";
+          })
+          .catch((error) => {
+            console.error("Error fetching data:", error);
+            alert("An error occurred. Please try again later.");
+          });
+      }
+    </script>
+  </body>
+</html>
